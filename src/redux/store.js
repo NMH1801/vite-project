@@ -6,7 +6,7 @@ import storage from 'redux-persist/lib/storage';
 const authPersistConfig = {
   key: 'auth',
   storage: storage,
-  whitelist: ['isLoggedIn'], // Các trường dữ liệu bạn muốn duy trì
+  whitelist: ['isLoggedIn', 'token', 'user'], // Các trường dữ liệu bạn muốn duy trì
 };
 
 const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
@@ -14,7 +14,6 @@ export const store = configureStore({
   reducer: {
     auth: persistedAuthReducer,
     fetchData: fetchDataReducer,
- 
   },
   middleware: (getDefaultMiddleware) =>
   getDefaultMiddleware({

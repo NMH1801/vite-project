@@ -1,0 +1,107 @@
+.loginHeaderContainer {
+    background: #da2a1c;
+    padding: 8px 0px 8px 24px;
+    display: flex;
+    border-radius: 5px;
+}
+
+.loginHeaderContainer h1 {
+    color: white;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 450;
+}
+
+.loginContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    justify-content: space-between;
+}
+
+.loginFooterContainer {
+    background-image: url(../../assets/footerLogin.svg);
+    width: 100%;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-position-y: bottom;
+    flex: 1;
+}
+
+.loginFormContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loginForm {
+    background-color: white;
+    box-shadow: rgba(253, 178, 206, 0.47) 0px 2px 20px;
+    border-radius: 25px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 30%;
+    max-width: 450px;
+}
+
+.loginForm h2 {
+    font-size: 20px;
+    margin-bottom: 16px;
+}
+
+.row {
+    width: 100%;
+}
+
+.loginInput{
+    border-radius: 25px !important;
+    border: 1px solid grey;
+    padding:1px 8px;
+    height: 50px;
+}
+
+/* Ghi đè màu focus */
+.form-control:focus {
+    border-color: none !important;
+    /* Màu viền focus mong muốn */
+    box-shadow: none !important;
+    /* Hiệu ứng shadow focus mong muốn */
+}
+.loginInput:focus-within {
+    border-color: red; /* Màu nền khi focus */
+  }
+.form-control{
+    outline:none !important;
+    
+}
+
+.loginIcon{
+    font-size: 1.2rem;
+}
+
+.borderRadius{
+    border-radius: 25px !important;
+}
+
+.loginError{
+    border-color:red;
+}
+
+.buttonColorRed{
+    background-color:red ;
+    color:white ;
+    padding: 8px;
+}
+
+@media only screen and (max-width: 800px) {
+    .loginHeaderContainer {
+      display:none;
+    }
+    .loginForm{
+        width: 100%;
+    }
+  }

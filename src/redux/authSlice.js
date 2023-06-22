@@ -5,55 +5,74 @@ const authSlice = createSlice({
   name: 'auth',
   initialState: {
     isLoggedIn: false,
-    user: null,
     error: null,
     token: null,
-    loading:false,
+    loading: false,
+    user:null,
   },
   reducers: {
-    logout: (state) => {
-      state.isLoggedIn = false;
-      state.user = null;
+    setUser: (state, action) => {
+      state.user = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(loginAsync.pending, (state) => {
-        state.loading=true;
+        state.loading = true;
         state.error = null;
       })
       .addCase(loginAsync.fulfilled, (state, action) => {
-        state.loading=false;
+        state.loading = false;
         state.isLoggedIn = true;
-        state.user = action.payload;
+        state.token = action.payload.access_token;
       })
       .addCase(loginAsync.rejected, (state, action) => {
-        console.log(action)
-        state.loading=false;
+        state.loading = false;
         state.isLoggedIn = false;
-        state.user = null;
+      })
+      .addCase(logoutAsync.fulfilled, (state) => {
+        state.isLoggedIn = false;
+      })
+      .addCase(logoutAsync.rejected, (state, action) => {
         state.error = action.payload;
       });
   },
 });
-
-export const { logout } = authSlice.actions;
+export const {setUser} = authSlice.actions;
 
 export const loginAsync = createAsyncThunk(
   'auth/login',
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post('http://wlp.howizbiz.com/api/web-authenticate', credentials);
-
-      if (response.status !== 200) {
-        throw new Error(response.data.message);
-      }
-
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.response.data.message);
     }
   }
 );
+
+export const logoutAsync = createAsyncThunk(
+  'auth/logout',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const token = getState().auth.token;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const response = await axios.post('http://wlp.howizbiz.com/api/logout', token, config);
+      if (response.data) {
+        return response.data;
+      } else {
+        return rejectWithValue('Invalid response data');
+      }
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
 
 export default authSlice.reducer;

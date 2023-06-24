@@ -73,8 +73,14 @@ export const DashboardHeader = () => {
 
   return (
     <>
-      <Header className="dashboardHeader" align="middle">
-        <Row align="middle" className="h-100">
+      <Header className="dashboardHeader" style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 1,
+          width: '100%',
+          display: 'flex',
+        }}>
+        <Row align="middle" className="h-100 w-100">
           <Col className="h-100 ellipsis-text">
             <Space size="small" className="h-100">
               <Link

@@ -72,5 +72,16 @@ p{
 }
 
 a{
-  text-decoration: none;
+  text-decoration: none !important;
+}
+.redText{
+  color:red;
+}
+
+.redBg:hover{
+  color: red !important;
+  background-color: rgba(248, 110, 110, 0.2) !important;
+}
+.content {
+  padding: 16px;
 }

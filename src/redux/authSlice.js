@@ -6,9 +6,9 @@ const authSlice = createSlice({
   initialState: {
     isLoggedIn: false,
     error: null,
-    token: null,
     loading: false,
     user:null,
+    token: null,
   },
   reducers: {
     setUser: (state, action) => {
@@ -25,13 +25,16 @@ const authSlice = createSlice({
         state.loading = false;
         state.isLoggedIn = true;
         state.token = action.payload.access_token;
+        // localStorage.setItem("jwtToken", action.payload.access_token)
       })
-      .addCase(loginAsync.rejected, (state, action) => {
+      .addCase(loginAsync.rejected, (state) => {
         state.loading = false;
         state.isLoggedIn = false;
       })
       .addCase(logoutAsync.fulfilled, (state) => {
         state.isLoggedIn = false;
+        state.token = null;
+        state.user = null;
       })
       .addCase(logoutAsync.rejected, (state, action) => {
         state.error = action.payload;

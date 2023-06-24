@@ -19,3 +19,9 @@
 .dashboardPopOver:hover {
     background-color: rgba(176, 167, 167, 0.2)
 }
+
+.dashboardPopOverBottom{
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+}

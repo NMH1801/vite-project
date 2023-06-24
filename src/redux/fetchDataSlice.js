@@ -1,50 +1,50 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { fetchData }from '../api/api' // Thay thế đường dẫn tới file API của bạn
+import {  createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  products: [],
+  items: [],
   loading: false,
   error: null,
+  page: 1,
+  pageSize: 10,
+  search: "",
+  total :"",
 };
 
 const fetchDataSlice = createSlice({
-  name: 'fetchData',
+  name: "fetchData",
   initialState,
   reducers: {
-    fetchDataRequest: (state) => {
-      state.loading = true;
-      state.error = null;
+    setPage: (state, action) => {
+      state.page = action.payload;
     },
-    fetchDataSuccess: (state, action) => {
-      state.products = action.payload;
-      state.loading = false;
-      state.error = null;
+    setPageSize: (state, action) => {
+      state.pageSize = action.payload;
     },
-    fetchDataFailure: (state, action) => {
-      state.products = [];
-      state.loading = false;
-      state.error = action.payload;
+    setSearch: (state, action) =>{
+      state.search = action.payload;
     },
+    setLoading: (state, action) =>{
+      state.loading = action.payload;
+    },
+    setItem: (state, action)=>{
+      state.items = action.payload;
+    },
+    setTotal: (state, action) =>{
+      state.total = action.payload;
+    }
   },
 });
 
 export const {
-  fetchDataRequest,
-  fetchDataSuccess,
-  fetchDataFailure,
+  setPage,
+  setPageSize,
+  setSearch,
+  setLoading,
+  setItem,
+  setTotal,
 } = fetchDataSlice.actions;
 
 // Thunk action creator để gọi API và lấy dữ liệu
-export const fetchDataAsync = () => async (dispatch) => {
-  try {
-    dispatch(fetchDataRequest());
 
-    const response = await fetchData();
-
-    dispatch(fetchDataSuccess(response.data));
-  } catch (error) {
-    dispatch(fetchDataFailure(error.message));
-  }
-};
 
 export default fetchDataSlice.reducer;

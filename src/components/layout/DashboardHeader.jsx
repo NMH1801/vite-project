@@ -1,125 +1,111 @@
-import { MenuOutlined } from "@ant-design/icons";
-import { Button, theme, Row, Space, Col, Popover } from "antd";
-import nguoidungCss from "./header.module.css";
-import logoImage from "../../assets/logo.png";
-import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutAsync, setUser } from "../../redux/authSlice";
 import { Header } from "antd/es/layout/layout";
-// import {logOut} from "../../ultis/postData"
-export const HeaderAdmin = ({props}) => {
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    await logOut(navigate);
-  };
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
+import "./dashboardHeader.css";
+import { Link } from "react-router-dom";
+import { Button, Col, Popover, Row, Space, Tag, message } from "antd";
+import imagePath from "../../assets/logo.png";
+import { useEffect } from "react";
+import axios from "axios";
+export const DashboardHeader = () => {
+  const dispatch = useDispatch();
+  const token = useSelector((state)=> state.auth.token)
+  const user = useSelector((state) => state.auth.user);
   const content = (
     <>
-      <div className={nguoidungCss.popperContainer}>
-        <div
-          className={nguoidungCss.button}
-          style={{ width: "60px", height: "60px" }}
+      <div className="center column dashboardPopup">
+        <button
+          className="button"
+          style={{
+            width: "60px",
+            height: "60px",
+          }}
         >
           B
-        </div>
+        </button>
         <br />
-        <div className={nguoidungCss.text}>
-          <b>Ban quản lý dự án</b>
-        </div>
-        <Link className={nguoidungCss.textColor}>
-          <b>Ban quản lý dự án</b>
-        </Link>
+        <div className="fs18 text-muted">{user && user.name}</div>
+        {user && (
+          <Tag
+            color={user.roles[0].meta.color}
+            style={{
+              color: user.roles[0].meta?.["text-color"],
+            }}
+            className="pointer fs14 text-muted"
+          >
+            {user.name}
+          </Tag>
+        )}
         <br />
       </div>
-      <div className={nguoidungCss.popperBottom}>
-        <Link
-          className={nguoidungCss.popperBottomText}
-          style={{ color: "black" }}
-        >
-          Hồ sơ
-        </Link>
+      <div className="dashboardPopOverBottom">
+        <Button type="text">Hồ sơ</Button>
         <Button
-          // to="./dang-nhap"
           type="text"
-          className={nguoidungCss.popperBottomText}
-          style={{ color: "red" }}
-          onClick={handleLogout}
+          className="redText redBg"
+          onClick={() => dispatch(logoutAsync())}
         >
           Đăng xuất
         </Button>
       </div>
     </>
   );
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        const response = await axios.get(
+          "http://wlp.howizbiz.com/api/me",
+          config
+        );
+        const user = response.data.user;
+        dispatch(setUser(user));
+      } catch (error) {
+        message.error(error);
+      }
+    };
+      fetchData();
+  }, [dispatch, token]);
+
   return (
-      <Header
-        style={{
-          padding: "0px 16px",
-          background: colorBgContainer,
-          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-          zIndex: 100,
-        }}
-      >
-        <Row align="middle" style={{ alignItems: "center" }}>
-          <Col>
-            <Space size="middle">
-              <Button
-                type="text"
-                icon={<MenuOutlined style={{ fontSize: "18px" }} />}
-                onClick={() => setCollapsed(!collapsed)}
-                style={{
-                  fontSize: "14px",
-                  width: 40,
-                  height: 40,
-                  borderRadius: "50%",
-                  alignItems: "center",
-                }}
-              />
+    <>
+      <Header className="dashboardHeader" align="middle">
+        <Row align="middle" className="h-100">
+          <Col className="h-100">
+            <Space size="middle" className="h-100">
               <Link
                 to="/index"
                 style={{ display: "flex", alignItems: "center" }}
               >
-                <img src={logoImage} alt="Logo" style={{ height: "40px" }} />
+                <img src={imagePath} alt="Logo" style={{ height: "40px" }} />
               </Link>
-              <h1
-                style={{
-                  fontSize: "22px",
-                  fontWeight: 500,
-                }}
-              >
+              <h1>
                 HỆ THỐNG BÁO CÁO VỀ HIỆN TRẠNG LOÀI NGUY CẤP, QUÝ, HIẾM ĐƯỢC ƯU
                 TIÊN BẢO VỆ
               </h1>
             </Space>
           </Col>
-          <Col flex="auto">
-            <div
-              style={{
-                float: "right",
-              }}
+          <Col flex="auto" className="h-100">
+            <Popover
+              placement="bottom"
+              content={content}
+              trigger="click"
+              className="pointer dashboardPopOver h-100"
             >
-              <Popover
-                placement="bottom"
-                content={content}
-                trigger="click"
-                style={{
-                  marginRight: "10px",
-                }}
-              >
-                <div className={nguoidungCss.container}>
-                  <Space size="small">
-                    <div className={nguoidungCss.button}>B</div>
-                    <div className={nguoidungCss.text}>
-                      <p>
-                        <b>Ban quản lý dự án</b>
-                      </p>
-                    </div>
-                  </Space>
-                </div>
-              </Popover>
-            </div>
+              <div className="right">
+                <Space size="small" className="center h-100">
+                  <button className="button">B</button>
+                  <p className="h-100">{user && user.name}</p>
+                </Space>
+              </div>
+            </Popover>
           </Col>
         </Row>
       </Header>
+    </>
   );
 };

@@ -1,0 +1,28 @@
+.sheepIcon {
+  background-color: rgb(64, 231, 209, 0.5);
+  border-radius: 25px;
+  padding: 5px;
+}
+.alignItemCenter {
+  align-items: center;
+}
+
+.ant-table-body::-webkit-scrollbar {
+  width: 6px; /* Đặt chiều rộng thanh cuộn */
+  height: 6px;
+}
+
+.custom-table-container::-webkit-scrollbar {
+    height: 8px; /* Đặt chiều cao của thanh cuộn ngang */
+  }
+.ant-table-body::-webkit-scrollbar-thumb {
+  background-color: #888; /* Màu sắc của thanh cuộn */
+  border-radius: 4px; /* Đặt bo tròn cho thanh cuộn */
+}
+
+.tableData::-webkit-scrollbar-track {
+  background-color: #f1f1f1; /* Màu sắc của phần track của thanh cuộn */
+}
+
+
+  

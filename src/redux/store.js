@@ -4,18 +4,24 @@ import fetchDataReducer from './fetchDataSlice';
 import apiReducer from './apiSlice'
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import sessionStorage from 'redux-persist/es/storage/session';
 const authPersistConfig = {
   key: 'auth',
   storage: storage,
   whitelist: ['isLoggedIn', 'token', 'user'], // Các trường dữ liệu bạn muốn duy trì
 };
-
+const apiPersistConfig = {
+  key: 'api',
+  storage: sessionStorage,
+}
 const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
+const persistedApiReducer = persistReducer(apiPersistConfig, apiReducer);
+
 export const store = configureStore({
   reducer: {
     auth: persistedAuthReducer,
     fetchData: fetchDataReducer,
-    api: apiReducer,
+    api: persistedApiReducer,
   },
   middleware: (getDefaultMiddleware) =>
   getDefaultMiddleware({
@@ -26,3 +32,4 @@ export const store = configureStore({
 });
 
 export const persistor = persistStore(store);
+

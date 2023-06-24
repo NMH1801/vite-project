@@ -75,15 +75,15 @@ export const DashboardHeader = () => {
     <>
       <Header className="dashboardHeader" align="middle">
         <Row align="middle" className="h-100">
-          <Col className="h-100">
-            <Space size="middle" className="h-100">
+          <Col className="h-100 ellipsis-text">
+            <Space size="small" className="h-100">
               <Link
                 to="/index"
                 style={{ display: "flex", alignItems: "center" }}
               >
                 <img src={imagePath} alt="Logo" style={{ height: "40px" }} />
               </Link>
-              <h1>
+              <h1 className="ellipsis-text" >
                 HỆ THỐNG BÁO CÁO VỀ HIỆN TRẠNG LOÀI NGUY CẤP, QUÝ, HIẾM ĐƯỢC ƯU
                 TIÊN BẢO VỆ
               </h1>

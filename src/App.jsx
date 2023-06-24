@@ -31,8 +31,8 @@ export default function App() {
           element={isLoggedIn ? <SpeciesOutlet /> : <Navigate to="/loginV2" />}
         >
           <Route path="species" element={<Species />} />
-          <Route path="species/insert" element={<SpeciesForm formActive="insert" />} />
-          {/* <Route path="species/edit/*" element={<SpeciesForm formActive="edit" />} /> */}
+          <Route path="species/insert" element={<SpeciesForm/>} />
+          <Route path="species/edit/:id" element={<SpeciesForm />} />
         </Route>
       </Routes>
     </BrowserRouter>

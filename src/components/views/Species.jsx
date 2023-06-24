@@ -1,10 +1,11 @@
 import Icon from "@mdi/react";
-import { mdiSheep } from "@mdi/js";
+import { mdiPen, mdiSheep, mdiTrashCanOutline } from "@mdi/js";
 import {
   Avatar,
   Button,
   Col,
   Input,
+  Modal,
   Pagination,
   Row,
   Select,
@@ -26,8 +27,10 @@ import {
 } from "../../redux/fetchDataSlice";
 import axios from "axios";
 import { debounce } from "lodash";
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { endpoint } from "../../const/const";
+import { deleteData } from "../../api/api";
+import { useState } from "react";
 const classData = "class";
 export const Species = () => {
   const columns = [
@@ -92,8 +95,36 @@ export const Species = () => {
     },
     {
       title: "Hành động",
+      render: (_, record) => (
+        <Space size="small" className="action-buttons">
+          <Button
+            type="link"
+            className="red"
+            onClick={() => {
+              window.location.href = `species/edit/${record.id}`;
+            }}
+          >
+            <Icon path={mdiPen} size={1} color="red" />
+          </Button>
+          <Button
+            type="link"
+            className="red"
+            onClick={() => {
+              showModal(record);
+            }}
+          >
+            <Icon
+              className="pointer"
+              path={mdiTrashCanOutline}
+              size={1}
+              color="red"
+            />
+          </Button>
+        </Space>
+      ),
     },
   ];
+
   const dispatch = useDispatch();
   const dataSource = useSelector((state) => state.fetchData.items);
   const loading = useSelector((state) => state.fetchData.loading);
@@ -102,6 +133,25 @@ export const Species = () => {
   const total = useSelector((state) => state.fetchData.total);
   const token = useSelector((state) => state.auth.token);
   const search = useSelector((state) => state.fetchData.search);
+  const [buttonLoading, setButtonLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [record, setRecord] = useState("");
+  const [flag, setFlag] = useState(true);
+  const showModal = (record) => {
+    setIsModalOpen(true);
+    setRecord(record);
+  };
+
+  const handleOk = async () => {
+    setButtonLoading(true);
+    await deleteData(record.id);
+    setButtonLoading(false);
+    setIsModalOpen(false);
+    setFlag(!flag);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
   const handleSearch = (value) => {
     dispatch(setSearch(value));
     dispatch(setPage(1));
@@ -130,7 +180,7 @@ export const Species = () => {
       }
     };
     fetchData();
-  }, [dispatch, token, page, pageSize, searchParam]);
+  }, [dispatch, token, page, pageSize, searchParam, flag]);
   return (
     <div className="content">
       <Row className="alignItemCenter">
@@ -160,8 +210,11 @@ export const Species = () => {
           <Button
             className="right"
             size="large"
+            onClick={() => {
+              window.location.href = "/dashboard/species/insert";
+            }}
           >
-            <Link to="./insert">Thêm mới</Link>
+            <Link>Thêm mới</Link>
           </Button>
         </Col>
       </Row>
@@ -179,45 +232,55 @@ export const Species = () => {
           className="tableData"
         />
         <br />
+        {total === 0 ? (
+          ""
+        ) : (
+          <Row justify="space-between" align="middle">
+            <Col span={8}>
+              {(page - 1) * pageSize + 1 === total ? (
+                <p>
+                  {total}/{total}
+                </p>
+              ) : (
+                <p>{`${(page - 1) * pageSize + 1}-${Math.min(
+                  page * pageSize,
+                  total
+                )}/${total}`}</p>
+              )}
+            </Col>
+            <Col span={8} style={{ textAlign: "center" }}>
+              <Pagination
+                current={page}
+                total={total}
+                pageSize={pageSize}
+                onChange={(page) => dispatch(setPage(page))}
+                showSizeChanger={false}
+              />
+            </Col>
+            <Col span={8} style={{ textAlign: "right" }}>
+              <Select
+                value={pageSize.toString()}
+                onChange={(newPageSize) => dispatch(setPageSize(newPageSize))}
+              >
+                <Select.Option value="5">5 / trang</Select.Option>
+                <Select.Option value="10">10 / trang</Select.Option>
+                <Select.Option value="25">25 / trang</Select.Option>
+                <Select.Option value="50">50 / trang</Select.Option>
+              </Select>
+            </Col>
+          </Row>
+        )}
       </Spin>
-      {total === 0 ? (
-        ""
-      ) : (
-        <Row justify="space-between" align="middle">
-          <Col span={8}>
-            {(page - 1) * pageSize + 1 === total ? (
-              <p>
-                {total}/{total}
-              </p>
-            ) : (
-              <p>{`${(page - 1) * pageSize + 1}-${Math.min(
-                page * pageSize,
-                total
-              )}/${total}`}</p>
-            )}
-          </Col>
-          <Col span={8} style={{ textAlign: "center" }}>
-            <Pagination
-              current={page}
-              total={total}
-              pageSize={pageSize}
-              onChange={(page) => dispatch(setPage(page))}
-              showSizeChanger={false}
-            />
-          </Col>
-          <Col span={8} style={{ textAlign: "right" }}>
-            <Select
-              value={pageSize.toString()}
-              onChange={(newPageSize) => dispatch(setPageSize(newPageSize))}
-            >
-              <Select.Option value="5">5 / trang</Select.Option>
-              <Select.Option value="10">10 / trang</Select.Option>
-              <Select.Option value="25">25 / trang</Select.Option>
-              <Select.Option value="50">50 / trang</Select.Option>
-            </Select>
-          </Col>
-        </Row>
-      )}
+
+      <Modal
+        title="Cảnh báo"
+        confirmLoading={buttonLoading}
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <p>Bạn có chắc muốn xóa đối tượng {record.ten} không?</p>
+      </Modal>
     </div>
   );
 };

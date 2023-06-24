@@ -114,9 +114,11 @@ const Form = () => {
                 )}
                 <Button
                     htmlType="submit"
-                    className="buttonColorRed w-100 borderRadius"
+                    className=" w-100 borderRadius"
                     size="large"
                     loading={loading}
+                    type="primary"
+                    danger
                 >
                     Đăng nhập
                 </Button>

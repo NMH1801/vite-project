@@ -31,11 +31,13 @@ const authSlice = createSlice({
       .addCase(loginAsync.rejected, (state) => {
         state.loading = false;
         state.isLoggedIn = false;
+
       })
       .addCase(logoutAsync.fulfilled, (state) => {
         state.isLoggedIn = false;
         state.token = null;
         state.user = null;
+        sessionStorage.clear();
       })
       .addCase(logoutAsync.rejected, (state, action) => {
         state.error = action.payload;
